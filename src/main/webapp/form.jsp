@@ -1,3 +1,5 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page import="ru.ifmo.se.model.CheckResult" %>
 <%@ page import="java.util.List" %>
 <%@ page session="true" %>
@@ -7,7 +9,7 @@
     <meta charset="UTF-8">
     <title>Проверка Точки в Области</title>
     <style>
-        /* Стили для страницы */
+        /* Ваши стили */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -101,7 +103,7 @@
         }
 
         // Отрисовка точки на canvas
-        function drawPoint(x, y, isInside) {
+        function drawPoint() {
             var canvas = document.getElementById("resultCanvas");
             var ctx = canvas.getContext("2d");
             var radius = parseFloat(document.getElementById("radius").value);
@@ -187,29 +189,20 @@
             <th>Радиус</th>
             <th>Попадает</th>
         </tr>
-        <%
-            List<CheckResult> results = (List<CheckResult>) session.getAttribute("results");
-            if (results != null) {
-                for (CheckResult res : results) {
-        %>
-        <tr>
-            <td><%= res.getX() %></td>
-            <td><%= res.getY() %></td>
-            <td><%= res.getRadius() %></td>
-            <td><%= res.isInside() ? "Да" : "Нет" %></td>
-        </tr>
-        <%
-                }
-            }
-        %>
+        <c:if test="${not empty results}">
+            <c:forEach var="res" items="${results}">
+                <tr>
+                    <td>${res.x}</td>
+                    <td>${res.y}</td>
+                    <td>${res.radius}</td>
+                    <td>${res.inside ? "Да" : "Нет"}</td>
+                </tr>
+            </c:forEach>
+        </c:if>
     </table>
 
-    <%
-        if (request.getAttribute("error") != null) {
-    %>
-        <p style="color:red;"><%= request.getAttribute("error") %></p>
-    <%
-        }
-    %>
+    <c:if test="${not empty error}">
+        <p style="color:red;">${error}</p>
+    </c:if>
 </body>
 </html>
