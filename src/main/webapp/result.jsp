@@ -1,3 +1,4 @@
+<%@ taglib uri="https://jakarta.ee/jsp/jstl/core" prefix="c" %>
 <%@ page import="ru.ifmo.se.model.CheckResult" %>
 <!DOCTYPE html>
 <html>
