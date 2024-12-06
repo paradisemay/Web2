@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle canvas click
     canvas.addEventListener("click", (event) => {
+        // Перед тем как проверять radius, обновим его значение из поля ввода
+        radius = document.getElementById("radius").value.trim();
+
         if (!radius || isNaN(radius)) {
             showToast("Установите радиус области перед выбором точки.", "warning");
             return;
@@ -29,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const canvasCenterX = canvas.width / 2;
         const canvasCenterY = canvas.height / 2;
-        const scaleFactor = canvas.width / 2 / radius; // Scale based on radius
+        const scaleFactor = (canvas.width / 2) / radius;
 
         const pointX = ((mouseX - canvasCenterX) / scaleFactor).toFixed(2);
         const pointY = ((canvasCenterY - mouseY) / scaleFactor).toFixed(2);
@@ -38,32 +41,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Draw initial canvas
+    document.getElementById("radius").addEventListener("input", () => {
+            drawCanvas();
+        });
+
     drawCanvas();
 
     function drawCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw axes
-        ctx.strokeStyle = "#A6E22E";
-        ctx.lineWidth = 2;
+           // Рисуем оси
+           ctx.strokeStyle = "#A6E22E";
+           ctx.lineWidth = 2;
+           ctx.beginPath();
+           ctx.moveTo(canvas.width / 2, 0);
+           ctx.lineTo(canvas.width / 2, canvas.height);
+           ctx.moveTo(0, canvas.height / 2);
+           ctx.lineTo(canvas.width, canvas.height / 2);
+           ctx.stroke();
 
-        ctx.beginPath();
-        ctx.moveTo(canvas.width / 2, 0);
-        ctx.lineTo(canvas.width / 2, canvas.height);
-        ctx.moveTo(0, canvas.height / 2);
-        ctx.lineTo(canvas.width, canvas.height / 2);
-        ctx.stroke();
+           // Берём радиус из поля ввода
+           const radiusValue = parseFloat(document.getElementById("radius").value.trim());
 
-        // Draw area (example: quarter-circle in top-right quadrant)
-        if (radius && !isNaN(radius)) {
-            ctx.fillStyle = "rgba(102, 217, 239, 0.5)";
-            ctx.beginPath();
-            ctx.arc(canvas.width / 2, canvas.height / 2, radius * (canvas.width / 2 / radius), 0, Math.PI / 2);
-            ctx.lineTo(canvas.width / 2, canvas.height / 2);
-            ctx.closePath();
-            ctx.fill();
-        }
-    }
+           if (!isNaN(radiusValue) && radiusValue > 0) {
+               const scaleFactor = (canvas.width / 2) / radiusValue;
+               ctx.fillStyle = "rgba(102, 217, 239, 0.5)";
+               ctx.beginPath();
+               ctx.arc(canvas.width / 2, canvas.height / 2, radiusValue * scaleFactor, 0, 2 * Math.PI);
+               ctx.fill();
+           }
+       }
 
     function submitPoint(x, y) {
         // Fill form and submit programmatically
