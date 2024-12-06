@@ -91,16 +91,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Обработчик отправки формы для валидации
     form.addEventListener("submit", (event) => {
-        const x = form.elements["x"].value.trim();
+        let x = form.elements["x"].value.trim();
         const y = yHidden.value.trim(); // Используем скрытое поле
         const r = form.elements["radius"].value.trim();
 
-        console.log(x, y, r);
-
+        // Проверка на пустые значения
         if (!isValidNumber(x) || !isValidNumber(y) || !isValidNumber(r)) {
             event.preventDefault();
             showToast("Пожалуйста, введите корректные числовые значения для X, Y и радиуса.", "error");
+            return;
         }
+
+        x = parseFloat(x);
+
+        // Проверка диапазона X
+        if (x < -5 || x > 3) {
+            event.preventDefault();
+            showToast("X должен быть в допустимом диапазоне [-5, 3].", "warning");
+            return;
+        }
+
+        // Проверка количества знаков после запятой
+        const xString = form.elements["x"].value.trim();
+        if (!/^[-]?\d+(\.\d{1,2})?$/.test(xString)) {
+            event.preventDefault();
+            showToast("Допустимо максимум две цифры после запятой: например, 1.01.", "warning");
+            return;
+        }
+
+
+        // Если все проверки пройдены, отправляем форму
+        console.log(x, y, r);
     });
 
     // Отрисовка канваса при загрузке страницы
