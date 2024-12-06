@@ -17,7 +17,7 @@
     <main class="container">
         <section class="form-section">
             <h2>Введите параметры:</h2>
-            <form name="pointForm" action="controller" method="post">
+            <form name="pointForm" action="controller" method="get">
                 <div class="form-group">
                     <label for="x">Координата X:</label>
                     <!-- Предварительное заполнение поля X -->
