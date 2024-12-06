@@ -22,16 +22,17 @@
     <main class="container">
         <section class="form-section">
             <h2>Введите параметры:</h2>
-            <form name="pointForm" action="controller" method="post" onsubmit="return validateForm();">
+            <form name="pointForm" action="controller" method="post">
                 <div class="form-group">
-                    <label for="x">Координата X (-5 ... 3):</label>
-                    <!-- Используем type="text", чтобы проще ограничить ввод -->
+                    <label for="x">Координата X:</label>
+                    <!-- Текстовое поле для X -->
                     <input type="text" id="x" name="x" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="y">Координата Y:</label>
-                    <select id="y" name="y" required>
+                    <label for="y_select">Координата Y:</label>
+                    <!-- Выпадающий список для Y без атрибута name -->
+                    <select id="y_select" required>
                         <option value="-2">-2</option>
                         <option value="-1.5">-1.5</option>
                         <option value="-1">-1</option>
@@ -46,24 +47,27 @@
 
                 <div class="form-group">
                     <label>Радиус Области:</label>
-                    <div class="button-group" id="radiusButtons">
-                        <button type="button" class="radius-btn" data-value="1">1</button>
-                        <button type="button" class="radius-btn" data-value="1.5">1.5</button>
-                        <button type="button" class="radius-btn" data-value="2">2</button>
-                        <button type="button" class="radius-btn" data-value="2.5">2.5</button>
-                        <button type="button" class="radius-btn" data-value="3">3</button>
+                    <div class="button-group" id="radiusButtons" role="group" aria-label="Выбор радиуса">
+                        <button type="button" class="radius-btn active" data-value="1" aria-pressed="true">1</button>
+                        <button type="button" class="radius-btn" data-value="1.5" aria-pressed="false">1.5</button>
+                        <button type="button" class="radius-btn" data-value="2" aria-pressed="false">2</button>
+                        <button type="button" class="radius-btn" data-value="2.5" aria-pressed="false">2.5</button>
+                        <button type="button" class="radius-btn" data-value="3" aria-pressed="false">3</button>
                     </div>
                     <!-- Скрытое поле для хранения выбранного радиуса -->
-                    <input type="hidden" id="radius" name="radius" required>
+                    <input type="hidden" id="radius" name="radius" value="1" required>
                 </div>
 
-                <button type="submit" class="btn btn-submit">Проверить</button>
+                <!-- Скрытое поле для хранения значения Y при клике на канвас -->
+                <input type="hidden" id="y_hidden" name="y">
+
+                <button type="submit" class="btn-submit">Проверить</button>
             </form>
         </section>
 
         <section class="canvas-section">
             <h2>Интерактивная Область</h2>
-            <canvas id="resultCanvas" width="400" height="400" onclick="getMouseCoordinates(event)"></canvas>
+            <canvas id="resultCanvas" width="400" height="400"></canvas>
         </section>
 
         <section class="results-section">
@@ -84,10 +88,12 @@
                                 <td>${res.x}</td>
                                 <td>${res.y}</td>
                                 <td>${res.radius}</td>
-                                <td><c:choose>
-                                    <c:when test="${res.inside}">Да</c:when>
-                                    <c:otherwise>Нет</c:otherwise>
-                                </c:choose></td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${res.inside}">Да</c:when>
+                                        <c:otherwise>Нет</c:otherwise>
+                                    </c:choose>
+                                </td>
                             </tr>
                         </c:forEach>
                     </c:if>
