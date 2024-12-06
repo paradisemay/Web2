@@ -37,6 +37,9 @@ public class ControllerServlet extends HttpServlet {
     }
 
     private boolean isValid(String xParam, String yParam, String radiusParam) {
+        if (xParam == null || yParam == null || radiusParam == null) {
+            return false;
+        }
         try {
             // Проверяем количество цифр после запятой
             if (hasTooManyDecimals(xParam) || hasTooManyDecimals(yParam) || hasTooManyDecimals(radiusParam)) {
@@ -56,6 +59,9 @@ public class ControllerServlet extends HttpServlet {
     }
 
     private boolean hasTooManyDecimals(String value) {
+        if (value == null) {
+            return false;
+        }
         int indexOfDot = value.indexOf('.');
         if (indexOfDot == -1) {
             return false; // Нет дробной части
