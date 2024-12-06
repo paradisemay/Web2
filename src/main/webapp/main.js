@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.beginPath();
         ctx.moveTo(0, centerY);
         ctx.lineTo(canvas.width, centerY);
-        ctx.strokeStyle = "black";
+        ctx.strokeStyle = "#50E3C2";
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.moveTo(canvas.width - 10, centerY - 5);
         ctx.lineTo(canvas.width, centerY);
         ctx.lineTo(canvas.width - 10, centerY + 5);
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "#50E3C2";
         ctx.fill();
         ctx.closePath();
 
@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.beginPath();
         ctx.moveTo(centerX, 0);
         ctx.lineTo(centerX, canvas.height);
-        ctx.strokeStyle = "black";
+        ctx.strokeStyle = "#50E3C2";
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -145,19 +145,19 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.moveTo(centerX - 5, 10);
         ctx.lineTo(centerX, 0);
         ctx.lineTo(centerX + 5, 10);
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "#50E3C2";
         ctx.fill();
         ctx.closePath();
 
         // Подписи осей
         ctx.font = "12px Arial";
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "#50E3C2";
         ctx.fillText("X", canvas.width - 14, centerY + 19);
         ctx.fillText("Y", centerX + 10, 14);
     }
 
     function drawCircle(R) {
-        ctx.fillStyle = "rgba(66,170,255,0.34)";
+        ctx.fillStyle = "rgba(134,58,51,0.34)";
         ctx.beginPath();
         ctx.arc(centerX, centerY, (R / 2) * scale, -Math.PI, -Math.PI / 2);
         ctx.lineTo(centerX, centerY);
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function drawTriangle(R) {
-        ctx.fillStyle = "rgba(66,170,255,0.34)";
+        ctx.fillStyle = "rgba(134,58,51,0.34)";
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.lineTo(centerX, centerY - (R / 2) * scale);
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function drawSquare(R) {
-        ctx.fillStyle = "rgba(66,170,255,0.34)";
+        ctx.fillStyle = "rgba(134,58,51,0.34)";
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.lineTo(centerX, centerY + R * scale);
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function drawPoint(x, y) {
-        ctx.fillStyle = "#000dff";
+        ctx.fillStyle = "#50E3C2";
         ctx.beginPath();
         ctx.arc(centerX + x * scale, centerY - y * scale, 4, 0, Math.PI * 2); // Увеличен радиус точки для видимости
         ctx.fill();
