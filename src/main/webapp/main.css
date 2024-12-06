@@ -1,0 +1,148 @@
+/* Основные стили с новой цветовой схемой */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1E1E2F;
+    color: #D9E6F2;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #4A90E2;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 20px;
+    border-bottom: 5px solid #50E3C2;
+    border-radius: 0 0 10px 10px;
+}
+
+.container {
+    padding: 20px;
+    display: grid;
+    gap: 20px;
+}
+
+.form-section, .canvas-section, .results-section {
+    background-color: #282A36;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+    color: #50E3C2;
+    margin-top: 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 2px solid #FF6F61;
+    border-radius: 5px;
+    background-color: #2B2D3A;
+    color: #D9E6F2;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #50E3C2;
+    box-shadow: 0 0 5px #50E3C2;
+}
+
+.btn-submit {
+    background-color: #50E3C2;
+    color: #282A36;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.btn-submit:hover {
+    box-shadow: 0 0 15px #50E3C2;
+    transform: scale(1.05);
+}
+
+.btn-submit:active {
+    transform: scale(0.95);
+}
+
+canvas {
+    border: 2px solid #FF6F61;
+    border-radius: 10px;
+    background-color: #2B2D3A;
+    display: block;
+    margin: 0 auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #D9E6F2;
+}
+
+.results-table th, .results-table td {
+    border: 1px solid #4A90E2;
+    padding: 10px;
+    text-align: center;
+}
+
+.results-table th {
+    background-color: #50E3C2;
+    color: #282A36;
+}
+
+.results-table tr:nth-child(even) {
+    background-color: #282A36;
+}
+
+.error-message {
+    color: #FF6F61;
+    font-weight: bold;
+    text-align: center;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 1000;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(10px);
+}
+
+.toast-error {
+    background-color: #FF6F61;
+}
+
+.toast-warning {
+    background-color: #FFA500;
+}
+
+.toast-success {
+    background-color: #50E3C2;
+}

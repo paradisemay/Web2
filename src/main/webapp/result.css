@@ -1,0 +1,81 @@
+/* Основные стили для дизайна страницы с современным плиточным дизайном */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #E0E0E0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+h2 {
+    color: #50E3C2;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 1.8rem;
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+table {
+    width: 90%;
+    max-width: 800px;
+    border-collapse: collapse;
+    background-color: #1E1E2F;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+table th, table td {
+    border: 1px solid #50E3C2;
+    padding: 15px;
+    text-align: center;
+    font-size: 1rem;
+    color: #D9E6F2;
+}
+
+table th {
+    background-color: #282A36;
+    color: #50E3C2;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+table tr:nth-child(even) {
+    background-color: #2B2D3A;
+}
+
+table tr:hover {
+    background-color: #393A4B;
+    transition: background-color 0.3s;
+}
+
+/* Стили для кнопки-ссылки */
+a {
+    display: inline-block;
+    margin: 20px 0;
+    text-decoration: none;
+    color: #121212;
+    font-weight: bold;
+    background-color: #50E3C2;
+    padding: 10px 25px;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+a:hover {
+    background-color: #3D9970;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
