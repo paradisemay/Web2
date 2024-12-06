@@ -5,39 +5,49 @@ document.addEventListener("DOMContentLoaded", () => {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     let radius = null;
-    const scale = canvas.width / 10; // Масштаб для рисования
+    let scale = canvas.width / (2 * 1); // Начальное масштабирование для R=1
 
-    // Получаем все кнопки радиуса и скрытое поле
+    // Получаем все кнопки радиуса и скрытые поля
     const radiusButtons = document.querySelectorAll(".radius-btn");
     const radiusInput = document.getElementById("radius");
+    const ySelect = document.getElementById("y_select");
+    const yHidden = document.getElementById("y_hidden");
 
     // Обработчик выбора радиуса через кнопки
     radiusButtons.forEach(button => {
         button.addEventListener("click", () => {
-            // Удаляем класс 'active' у всех кнопок
-            radiusButtons.forEach(btn => btn.classList.remove("active"));
-            // Добавляем класс 'active' к выбранной кнопке
+            // Удаляем класс 'active' у всех кнопок и aria-pressed
+            radiusButtons.forEach(btn => {
+                btn.classList.remove("active");
+                btn.setAttribute("aria-pressed", "false");
+            });
+            // Добавляем класс 'active' к выбранной кнопке и aria-pressed
             button.classList.add("active");
+            button.setAttribute("aria-pressed", "true");
             // Устанавливаем значение в скрытое поле
             radiusInput.value = button.getAttribute("data-value");
             // Обновляем локальную переменную радиуса
             radius = parseFloat(radiusInput.value);
+            // Пересчитываем масштаб на основе выбранного радиуса
+            scale = canvas.width / (2 * radius);
             // Перерисовываем канвас с новым радиусом
             drawCanvas();
         });
     });
 
-    // Обработчик отправки формы для валидации
-    form.addEventListener("submit", (event) => {
-        const x = form.elements["x"].value.trim();
-        const y = form.elements["y"].value.trim();
-        const r = form.elements["radius"].value.trim();
-        console.log(x, y, r);
+    // Установка радиуса по умолчанию (если кнопка active установлена в HTML)
+    const defaultButton = document.querySelector(".radius-btn.active");
+    if (defaultButton) {
+        radiusInput.value = defaultButton.getAttribute("data-value");
+        radius = parseFloat(radiusInput.value);
+        scale = canvas.width / (2 * radius);
+        drawCanvas();
+    }
 
-        if (!isValidNumber(x) || !isValidNumber(y) || !isValidNumber(r)) {
-            event.preventDefault();
-            showToast("Пожалуйста, введите корректные числовые значения для X, Y и радиуса.", "error");
-        }
+    // Обработчик выбора значения Y через select
+    ySelect.addEventListener("change", () => {
+        const selectedY = ySelect.value;
+        yHidden.value = selectedY;
     });
 
     // Обработчик клика по канвасу
@@ -57,13 +67,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const pointX = ((mouseX - centerX) / scale).toFixed(2);
         const pointY = ((centerY - mouseY) / scale).toFixed(2);
 
+        // Устанавливаем значения в форму
         submitPoint(pointX, pointY);
     });
 
-    // Update canvas when radius changes
-    document.getElementById("radius").addEventListener("input", () => {
-        radius = parseFloat(document.getElementById("radius").value.trim());
-        drawCanvas();
+    // Обработчик отправки формы для валидации
+    form.addEventListener("submit", (event) => {
+        const x = form.elements["x"].value.trim();
+        const y = yHidden.value.trim(); // Используем скрытое поле
+        const r = form.elements["radius"].value.trim();
+
+        console.log(x, y, r);
+
+        if (!isValidNumber(x) || !isValidNumber(y) || !isValidNumber(r)) {
+            event.preventDefault();
+            showToast("Пожалуйста, введите корректные числовые значения для X, Y и радиуса.", "error");
+        }
     });
 
     // Отрисовка канваса при загрузке страницы
@@ -159,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function submitPoint(x, y) {
         form.elements["x"].value = x;
-        form.elements["y"].value = y;
+        yHidden.value = y; // Устанавливаем значение в скрытое поле
         form.submit();
     }
 
@@ -167,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return !isNaN(value) && value !== "";
     }
 
+    // Функция отображения сообщений
     function showToast(message, type) {
         const toast = document.createElement("div");
         toast.className = `toast toast-${type}`;
