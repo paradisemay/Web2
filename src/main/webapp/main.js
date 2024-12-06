@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawCircle(R) {
         ctx.fillStyle = "rgba(66,170,255,0.34)";
         ctx.beginPath();
-        ctx.arc(centerX, centerY, R * scale, -Math.PI, -Math.PI / 2);
+        ctx.arc(centerX, centerY, (R / 2) * scale, -Math.PI, -Math.PI / 2);
         ctx.lineTo(centerX, centerY);
         ctx.fill();
         ctx.closePath();
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.fillStyle = "rgba(66,170,255,0.34)";
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
-        ctx.lineTo(centerX, centerY + (R / 2) * scale);
+        ctx.lineTo(centerX, centerY - (R / 2) * scale);
         ctx.lineTo(centerX + (R / 2) * scale, centerY);
         ctx.lineTo(centerX, centerY);
         ctx.fill();
@@ -116,8 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.lineTo(centerX, centerY + R * scale);
-        ctx.lineTo(centerX - (R / 2) * scale, centerY + R * scale);
-        ctx.lineTo(centerX - (R / 2) * scale, centerY);
+        ctx.lineTo(centerX - R * scale, centerY + R * scale);
+        ctx.lineTo(centerX - R * scale, centerY);
         ctx.lineTo(centerX, centerY);
         ctx.fill();
         ctx.closePath();
