@@ -35,6 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
             radius = parseFloat(radiusInput.value);
             // Перерисовываем канвас с новым радиусом
             drawCanvas();
+            if (!isNaN(savedX) && !isNaN(savedY) && !isNaN(savedR)) {
+                drawPoint(savedX, savedY); // Рисуем точку
+            }
         });
     });
 
@@ -54,13 +57,16 @@ document.addEventListener("DOMContentLoaded", () => {
         radiusInput.value = radius;
     }
 
+    // Устанавливаем сохранённое значение Y
     if (!isNaN(savedY)) {
         ySelect.value = savedY;
         yHidden.value = savedY;
     }
 
+    drawCanvas();
+    // Отрисовка сохранённой точки, если координаты валидны
     if (!isNaN(savedX) && !isNaN(savedY) && !isNaN(savedR)) {
-        drawPoint(savedX, savedY);
+        drawPoint(savedX, savedY); // Рисуем точку
     }
 
     // Обработчик выбора значения Y через select
@@ -123,9 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Если все проверки пройдены, отправляем форму
         console.log(x, y, r);
     });
-
-    // Отрисовка канваса при загрузке страницы
-    drawCanvas();
 
     function drawCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
