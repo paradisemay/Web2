@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     let radius = null;
-    let scale = canvas.width / 10; // Начальное масштабирование для R=1
+    const scale = canvas.width / 7; // Начальное масштабирование для R=1
 
     // Получаем все кнопки радиуса и скрытые поля
     const radiusButtons = document.querySelectorAll(".radius-btn");
@@ -28,8 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
             radiusInput.value = button.getAttribute("data-value");
             // Обновляем локальную переменную радиуса
             radius = parseFloat(radiusInput.value);
-            // Пересчитываем масштаб на основе выбранного радиуса
-            scale = canvas.width / (2 * radius);
             // Перерисовываем канвас с новым радиусом
             drawCanvas();
         });
@@ -40,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (defaultButton) {
         radiusInput.value = defaultButton.getAttribute("data-value");
         radius = parseFloat(radiusInput.value);
-        scale = canvas.width / (2 * radius);
         drawCanvas();
     }
 
