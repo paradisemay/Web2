@@ -31,41 +31,33 @@ public class AreaCheckServlet extends HttpServlet {
             double y = Double.parseDouble(request.getParameter("y"));
             double radius = Double.parseDouble(request.getParameter("radius"));
 
-            boolean isInside;
-            // Проверка на диапазон значений
-            if (x < -5 || x > 3 || y < -2 || y > 2 || radius < 1 || radius > 3) {
-                isInside = false;
-            } else {
-                isInside = isInsideSquare(x, y, radius) || isInsideCircle(x, y, radius) || isInsideTriangle(x, y, radius);
-            }
+            boolean isInside = isInsideSquare(x, y, radius) ||
+                    isInsideCircle(x, y, radius) ||
+                    isInsideTriangle(x, y, radius);
 
-            // Создаём объект результата проверки
             CheckResult result = new CheckResult(x, y, radius, isInside);
 
-            // Получаем текущую сессию
             HttpSession session = request.getSession();
 
-            // Извлекаем список результатов из сессии или создаём новый
-            List<CheckResult> results = (List<CheckResult>) session.getAttribute("results");
-            if (results == null) {
+            // Retrieve and safely cast results list
+            List<CheckResult> results;
+            Object sessionResults = session.getAttribute("results");
+            if (sessionResults instanceof List<?>) {
+                results = (List<CheckResult>) sessionResults;
+            } else {
                 results = new ArrayList<>();
             }
             results.add(result);
             session.setAttribute("results", results);
 
-            // Сохраняем текущие значения в сессии
             session.setAttribute("currentX", x);
             session.setAttribute("currentY", y);
             session.setAttribute("currentR", radius);
 
-            // Устанавливаем атрибут `result` для отображения на странице результатов
             request.setAttribute("result", result);
-
-            // Перенаправляем на страницу результатов с помощью forward
             request.getRequestDispatcher("/result.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            // Обработка ошибок ввода
             HttpSession session = request.getSession();
             session.setAttribute("error", "Неверный формат чисел.");
             response.sendRedirect("controller");
