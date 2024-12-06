@@ -1,7 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ page import="ru.ifmo.se.model.CheckResult" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,19 +16,19 @@
             <th>Радиус Области</th>
             <th>Попадает в Область</th>
         </tr>
-        <%
-            CheckResult result = (CheckResult) request.getAttribute("result");
-            if (result != null) {
-        %>
-        <tr>
-            <td><%= result.getX() %></td>
-            <td><%= result.getY() %></td>
-            <td><%= result.getRadius() %></td>
-            <td><%= result.isInside() ? "Да" : "Нет" %></td>
-        </tr>
-        <%
-            }
-        %>
+        <c:if test="${not empty result}">
+            <tr>
+                <td><c:out value="${result.x}"/></td>
+                <td><c:out value="${result.y}"/></td>
+                <td><c:out value="${result.radius}"/></td>
+                <td>
+                    <c:choose>
+                        <c:when test="${result.inside}">Да</c:when>
+                        <c:otherwise>Нет</c:otherwise>
+                    </c:choose>
+                </td>
+            </tr>
+        </c:if>
     </table>
     <a href="controller">Вернуться к форме</a>
 </body>

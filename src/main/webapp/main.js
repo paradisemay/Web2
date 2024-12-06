@@ -13,6 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const ySelect = document.getElementById("y_select");
     const yHidden = document.getElementById("y_hidden");
 
+    // Переданные из JSP сохраненные значения
+    const savedX = parseFloat(window.savedX) || NaN;
+    const savedY = parseFloat(window.savedY) || NaN;
+    const savedR = parseFloat(window.savedR) || 1;
+
     // Обработчик выбора радиуса через кнопки
     radiusButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -33,12 +38,29 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Установка радиуса по умолчанию (если кнопка active установлена в HTML)
-    const defaultButton = document.querySelector(".radius-btn.active");
-    if (defaultButton) {
-        radiusInput.value = defaultButton.getAttribute("data-value");
-        radius = parseFloat(radiusInput.value);
-        drawCanvas();
+    // Инициализация формы и канваса с сохранёнными значениями
+    if (!isNaN(savedR)) {
+        radius = savedR;
+        // Установка активной кнопки радиуса
+        radiusButtons.forEach(btn => {
+            if (parseFloat(btn.getAttribute("data-value")) === radius) {
+                btn.classList.add("active");
+                btn.setAttribute("aria-pressed", "true");
+            } else {
+                btn.classList.remove("active");
+                btn.setAttribute("aria-pressed", "false");
+            }
+        });
+        radiusInput.value = radius;
+    }
+
+    if (!isNaN(savedY)) {
+        ySelect.value = savedY;
+        yHidden.value = savedY;
+    }
+
+    if (!isNaN(savedX) && !isNaN(savedY) && !isNaN(savedR)) {
+        drawPoint(savedX, savedY);
     }
 
     // Обработчик выбора значения Y через select
@@ -49,8 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Обработчик клика по канвасу
     canvas.addEventListener("click", (event) => {
-        radius = document.getElementById("radius").value.trim();
-
+        radius = parseFloat(radiusInput.value);
 
         if (!radius || isNaN(radius)) {
             showToast("Установите радиус области перед выбором точки.", "warning");
@@ -64,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const pointX = ((mouseX - centerX) / scale).toFixed(2);
         const pointY = ((centerY - mouseY) / scale).toFixed(2);
 
-        // Устанавливаем значения в форму
+        // Устанавливаем значения в форму и отправляем
         submitPoint(pointX, pointY);
     });
 
@@ -104,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.lineWidth = 2;
         ctx.stroke();
 
+        // Стрелка по оси X
         ctx.moveTo(canvas.width - 10, centerY - 5);
         ctx.lineTo(canvas.width, centerY);
         ctx.lineTo(canvas.width - 10, centerY + 5);
@@ -119,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.lineWidth = 2;
         ctx.stroke();
 
+        // Стрелка по оси Y
         ctx.moveTo(centerX - 5, 10);
         ctx.lineTo(centerX, 0);
         ctx.lineTo(centerX + 5, 10);
@@ -168,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawPoint(x, y) {
         ctx.fillStyle = "#50E3C2";
         ctx.beginPath();
-        ctx.arc(centerX + x * scale, centerY - y * scale, 2, 0, Math.PI * 2);
+        ctx.arc(centerX + x * scale, centerY - y * scale, 4, 0, Math.PI * 2); // Увеличен радиус точки для видимости
         ctx.fill();
         ctx.closePath();
     }

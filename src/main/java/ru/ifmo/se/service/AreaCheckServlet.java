@@ -10,6 +10,8 @@ import java.util.List;
 
 @WebServlet("/checkArea")
 public class AreaCheckServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -31,11 +33,13 @@ public class AreaCheckServlet extends HttpServlet {
 
             boolean isInside = isInsideSquare(x, y, radius) || isInsideCircle(x, y, radius) || isInsideTriangle(x, y, radius);
 
-            // Создаем объект результата проверки
+            // Создаём объект результата проверки
             CheckResult result = new CheckResult(x, y, radius, isInside);
 
-            // Сохраняем результат в сессии
+            // Получаем текущую сессию
             HttpSession session = request.getSession();
+
+            // Извлекаем список результатов из сессии или создаём новый
             List<CheckResult> results = (List<CheckResult>) session.getAttribute("results");
             if (results == null) {
                 results = new ArrayList<>();
@@ -43,16 +47,22 @@ public class AreaCheckServlet extends HttpServlet {
             results.add(result);
             session.setAttribute("results", results);
 
-            // Устанавливаем атрибуты для отображения
+            // Сохраняем текущие значения в сессии
+            session.setAttribute("currentX", x);
+            session.setAttribute("currentY", y);
+            session.setAttribute("currentR", radius);
+
+            // Устанавливаем атрибут `result` для отображения на странице результатов
             request.setAttribute("result", result);
 
-            // Перенаправляем на страницу результатов
+            // Перенаправляем на страницу результатов с помощью forward
             request.getRequestDispatcher("/result.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             // Обработка ошибок ввода
-            request.setAttribute("error", "Неверный формат чисел.");
-            request.getRequestDispatcher("/form.jsp").forward(request, response);
+            HttpSession session = request.getSession();
+            session.setAttribute("error", "Неверный формат чисел.");
+            response.sendRedirect("controller");
         }
     }
 
