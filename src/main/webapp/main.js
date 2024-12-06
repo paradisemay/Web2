@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const x = form.elements["x"].value.trim();
         const y = form.elements["y"].value.trim();
         const r = form.elements["radius"].value.trim();
+        console.log(x, y, r);
 
         if (!isValidNumber(x) || !isValidNumber(y) || !isValidNumber(r)) {
             event.preventDefault();
@@ -41,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Обработчик клика по канвасу
     canvas.addEventListener("click", (event) => {
-        // Получаем актуальное значение радиуса из скрытого поля
-        radius = parseFloat(radiusInput.value);
+        radius = document.getElementById("radius").value.trim();
+
 
         if (!radius || isNaN(radius)) {
             showToast("Установите радиус области перед выбором точки.", "warning");
