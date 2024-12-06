@@ -5,23 +5,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     let radius = null;
-    let scale = canvas.width / 4; // Масштаб для рисования
+    const scale = canvas.width / 4; // Масштаб для рисования
 
-    // Validate form inputs
+    // Получаем все кнопки радиуса и скрытое поле
+    const radiusButtons = document.querySelectorAll(".radius-btn");
+    const radiusInput = document.getElementById("radius");
+
+    // Обработчик выбора радиуса через кнопки
+    radiusButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            // Удаляем класс 'active' у всех кнопок
+            radiusButtons.forEach(btn => btn.classList.remove("active"));
+            // Добавляем класс 'active' к выбранной кнопке
+            button.classList.add("active");
+            // Устанавливаем значение в скрытое поле
+            radiusInput.value = button.getAttribute("data-value");
+            // Обновляем локальную переменную радиуса
+            radius = parseFloat(radiusInput.value);
+            // Перерисовываем канвас с новым радиусом
+            drawCanvas();
+        });
+    });
+
+    // Обработчик отправки формы для валидации
     form.addEventListener("submit", (event) => {
         const x = form.elements["x"].value.trim();
         const y = form.elements["y"].value.trim();
-        radius = form.elements["radius"].value.trim();
+        const r = form.elements["radius"].value.trim();
 
-        if (!isValidNumber(x) || !isValidNumber(y) || !isValidNumber(radius)) {
+        if (!isValidNumber(x) || !isValidNumber(y) || !isValidNumber(r)) {
             event.preventDefault();
             showToast("Пожалуйста, введите корректные числовые значения для X, Y и радиуса.", "error");
         }
     });
 
-    // Handle canvas click
+    // Обработчик клика по канвасу
     canvas.addEventListener("click", (event) => {
-        radius = document.getElementById("radius").value.trim();
+        // Получаем актуальное значение радиуса из скрытого поля
+        radius = parseFloat(radiusInput.value);
 
         if (!radius || isNaN(radius)) {
             showToast("Установите радиус области перед выбором точки.", "warning");
@@ -44,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         drawCanvas();
     });
 
-    // Draw initial canvas
+    // Отрисовка канваса при загрузке страницы
     drawCanvas();
 
     function drawCanvas() {
@@ -63,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.moveTo(0, centerY);
         ctx.lineTo(canvas.width, centerY);
         ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
         ctx.stroke();
 
         ctx.moveTo(canvas.width - 10, centerY - 5);
@@ -72,10 +94,12 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.fill();
         ctx.closePath();
 
+        // Ось Y
         ctx.beginPath();
         ctx.moveTo(centerX, 0);
         ctx.lineTo(centerX, canvas.height);
         ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
         ctx.stroke();
 
         ctx.moveTo(centerX - 5, 10);
@@ -85,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.fill();
         ctx.closePath();
 
+        // Подписи осей
         ctx.font = "12px Arial";
         ctx.fillStyle = "black";
         ctx.fillText("X", canvas.width - 14, centerY + 19);
