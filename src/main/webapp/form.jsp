@@ -24,17 +24,39 @@
             <h2>Введите параметры:</h2>
             <form name="pointForm" action="controller" method="post" onsubmit="return validateForm();">
                 <div class="form-group">
-                    <label for="x">Координата X:</label>
+                    <label for="x">Координата X (-5 ... 3):</label>
+                    <!-- Используем type="text", чтобы проще ограничить ввод -->
                     <input type="text" id="x" name="x" required>
                 </div>
+
                 <div class="form-group">
                     <label for="y">Координата Y:</label>
-                    <input type="text" id="y" name="y" required>
+                    <select id="y" name="y" required>
+                        <option value="-2">-2</option>
+                        <option value="-1.5">-1.5</option>
+                        <option value="-1">-1</option>
+                        <option value="-0.5">-0.5</option>
+                        <option value="0">0</option>
+                        <option value="0.5">0.5</option>
+                        <option value="1">1</option>
+                        <option value="1.5">1.5</option>
+                        <option value="2">2</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="radius">Радиус Области:</label>
-                    <input type="text" id="radius" name="radius" required>
+                    <label>Радиус Области:</label>
+                    <div class="button-group" id="radiusButtons">
+                        <button type="button" class="radius-btn" data-value="1">1</button>
+                        <button type="button" class="radius-btn" data-value="1.5">1.5</button>
+                        <button type="button" class="radius-btn" data-value="2">2</button>
+                        <button type="button" class="radius-btn" data-value="2.5">2.5</button>
+                        <button type="button" class="radius-btn" data-value="3">3</button>
+                    </div>
+                    <!-- Скрытое поле для хранения выбранного радиуса -->
+                    <input type="hidden" id="radius" name="radius" required>
                 </div>
+
                 <button type="submit" class="btn btn-submit">Проверить</button>
             </form>
         </section>
