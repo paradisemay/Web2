@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     let radius = null;
-    let scale = canvas.width / (2 * 1); // Начальное масштабирование для R=1
+    let scale = canvas.width / 10; // Начальное масштабирование для R=1
 
     // Получаем все кнопки радиуса и скрытые поля
     const radiusButtons = document.querySelectorAll(".radius-btn");
