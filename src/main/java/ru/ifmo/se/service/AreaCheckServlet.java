@@ -29,7 +29,7 @@ public class AreaCheckServlet extends HttpServlet {
             double y = Double.parseDouble(request.getParameter("y"));
             double radius = Double.parseDouble(request.getParameter("radius"));
 
-            boolean isInside = (x * x + y * y) <= (radius * radius);
+            boolean isInside = isInsideSquare(x, y, radius) || isInsideCircle(x, y, radius) || isInsideTriangle(x, y, radius);
 
             // Создаем объект результата проверки
             CheckResult result = new CheckResult(x, y, radius, isInside);
@@ -54,5 +54,17 @@ public class AreaCheckServlet extends HttpServlet {
             request.setAttribute("error", "Неверный формат чисел.");
             request.getRequestDispatcher("/form.jsp").forward(request, response);
         }
+    }
+
+    private boolean isInsideSquare(double x, double y, double radius) {
+        return x <= 0 && y <= 0 && x >= -radius && y >= -radius;
+    }
+
+    private boolean isInsideCircle(double x, double y, double radius) {
+        return x <= 0 && y >= 0 && (x * x + y * y) <= (radius / 2) * (radius / 2);
+    }
+
+    private boolean isInsideTriangle(double x, double y, double radius) {
+        return x > 0 && y > 0 && y <= -x + radius / 2;
     }
 }

@@ -7,6 +7,8 @@ import java.io.IOException;
 
 @WebServlet("/controller")
 public class ControllerServlet extends HttpServlet {
+    private static final int MAX_DECIMALS = 2;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -25,12 +27,39 @@ public class ControllerServlet extends HttpServlet {
         String yParam = request.getParameter("y");
         String radiusParam = request.getParameter("radius");
 
-        if (xParam != null && yParam != null && radiusParam != null) {
+        if (isValid(xParam, yParam, radiusParam)) {
             // Делегируем запрос на AreaCheckServlet
             request.getRequestDispatcher("/checkArea").forward(request, response);
         } else {
-            // Перенаправляем на JSP страницу с формой
+            // Перенаправляем на страницу с ошибкой
             request.getRequestDispatcher("/form.jsp").forward(request, response);
         }
+    }
+
+    private boolean isValid(String xParam, String yParam, String radiusParam) {
+        try {
+            // Проверяем количество цифр после запятой
+            if (hasTooManyDecimals(xParam) || hasTooManyDecimals(yParam) || hasTooManyDecimals(radiusParam)) {
+                return false;
+            }
+
+            double x = Double.parseDouble(xParam);
+            double y = Double.parseDouble(yParam);
+            double r = Double.parseDouble(radiusParam);
+
+            // Проверяем диапазоны
+            return x >= -5 && x <= 3 && y >= -2 && y <= 2 && r >= 1 && r <= 3;
+        } catch (NumberFormatException e) {
+            // Если параметры не могут быть преобразованы в числа
+            return false;
+        }
+    }
+
+    private boolean hasTooManyDecimals(String value) {
+        int indexOfDot = value.indexOf('.');
+        if (indexOfDot == -1) {
+            return false; // Нет дробной части
+        }
+        return value.length() - indexOfDot - 1 > MAX_DECIMALS;
     }
 }
