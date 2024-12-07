@@ -19,38 +19,28 @@
             <h2>Введите параметры:</h2>
             <form name="pointForm" action="controller" method="get">
                 <div class="form-group">
-                    <label for="x">Координата X:</label>
-                    <!-- Предварительное заполнение поля X -->
-                    <input type="text" id="x" name="x" required value="<c:out value='${currentX}' default=''/>">
-                </div>
-
-                <div class="form-group">
-                    <label for="y_select">Координата Y:</label>
-                    <!-- Выпадающий список для Y с выбором сохраненного значения -->
-                    <select id="y_select" required>
-                        <c:forEach var="yValue" items="${['-2', '-1.5', '-1', '-0.5', '0', '0.5', '1', '1.5', '2']}">
-                            <option value="${yValue}" <c:if test="${yValue == currentY}">selected</c:if>>${yValue}</option>
+                    <label for="x_select">Координата X:</label>
+                    <!-- Выпадающий список для X с выбором сохраненного значения -->
+                    <select id="x_select" name="x" required>
+                        <c:forEach var="xValue" items="${['-5', '-4', '-3', '-2', '-1', '0', '1', '2', '3']}">
+                            <option value="${xValue}" <c:if test="${xValue == currentX}">selected</c:if>>${xValue}</option>
                         </c:forEach>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Радиус Области:</label>
-                    <div class="button-group" id="radiusButtons" role="group" aria-label="Выбор радиуса">
-                        <c:forEach var="rValue" items="${['1', '1.5', '2', '2.5', '3']}">
-                            <button type="button" class="radius-btn <c:if test='${rValue == currentR}'>active</c:if>"
-                                    data-value="${rValue}"
-                                    aria-pressed="${rValue == currentR ? 'true' : 'false'}">
-                                ${rValue}
-                            </button>
-                        </c:forEach>
-                    </div>
-                    <!-- Скрытое поле для хранения выбранного радиуса -->
-                    <input type="hidden" id="radius" name="radius" value="<c:out value='${currentR}' default='1'/>" required>
+                    <label for="y_input">Координата Y:</label>
+                    <!-- Поле ввода Y с валидацией -->
+                    <input type="number" id="y_input" name="y" required min="-3" max="5"
+                           value="<c:out value='${currentY}' default='0'/>">
                 </div>
 
-                <!-- Скрытое поле для хранения значения Y при клике на канвас -->
-                <input type="hidden" id="y_hidden" name="y" value="<c:out value='${currentY}' default=''/>">
+                <div class="form-group">
+                    <label for="r_input">Радиус Области:</label>
+                    <!-- Поле ввода R с валидацией -->
+                    <input type="number" id="r_input" name="radius" required min="1" max="4" step="0.1"
+                           value="<c:out value='${currentR}' default='1'/>">
+                </div>
 
                 <button type="submit" class="btn-submit">Проверить</button>
             </form>
@@ -100,7 +90,7 @@
     <script>
         // Передача сохраненных значений в JavaScript для инициализации канваса
         window.savedX = <c:out value='${currentX}' default='0'/>;
-        window.savedY = <c:out value='${currentY}' default='-2'/>;
+        window.savedY = <c:out value='${currentY}' default='0'/>;
         window.savedR = <c:out value='${currentR}' default='1'/>;
     </script>
     <script src="main.js" type="module"></script>

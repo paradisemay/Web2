@@ -31,9 +31,13 @@ public class AreaCheckServlet extends HttpServlet {
             double y = Double.parseDouble(request.getParameter("y"));
             double radius = Double.parseDouble(request.getParameter("radius"));
 
-            boolean isInside = isInsideSquare(x, y, radius) ||
-                    isInsideCircle(x, y, radius) ||
-                    isInsideTriangle(x, y, radius);
+            boolean isInside;
+            // Проверка на диапазон значений
+            if (x < -5 || x > 3 || y < -3 || y > 5 || radius < 1 || radius > 4) {
+                isInside = false;
+            } else {
+                isInside = isInsideSquare(x, y, radius) || isInsideCircle(x, y, radius) || isInsideTriangle(x, y, radius);
+            }
 
             CheckResult result = new CheckResult(x, y, radius, isInside);
 
