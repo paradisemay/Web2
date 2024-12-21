@@ -48,10 +48,10 @@ public class ControllerServlet extends HttpServlet {
 
             Double.parseDouble(xParam);
             Double.parseDouble(yParam);
-            double r = Double.parseDouble(radiusParam);
+            Double.parseDouble(radiusParam);
 
             // Проверяем диапазоны
-            return r >= 1 && r <= 3;
+            return true;
         } catch (NumberFormatException e) {
             // Если параметры не могут быть преобразованы в числа
             return false;

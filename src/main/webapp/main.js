@@ -4,83 +4,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext("2d");
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    let radius = null;
     const scale = canvas.width / 7; // Начальное масштабирование для R=1
 
-    // Получаем все кнопки радиуса и скрытые поля
-    const radiusButtons = document.querySelectorAll(".radius-btn");
-    const radiusInput = document.getElementById("radius");
-    const ySelect = document.getElementById("y_select");
-    const yHidden = document.getElementById("y_hidden");
+    // Получаем элементы формы
+    const xSelect = document.getElementById("x_select");
+    const yInput = document.getElementById("y_input");
+    const rInput = document.getElementById("r_input");
 
     // Переданные из JSP сохраненные значения
     const savedX = parseFloat(window.savedX) || NaN;
     const savedY = parseFloat(window.savedY) || NaN;
-    const savedR = parseFloat(window.savedR) || 1;
-
-    // Обработчик выбора радиуса через кнопки
-    radiusButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            // Удаляем класс 'active' у всех кнопок и aria-pressed
-            radiusButtons.forEach(btn => {
-                btn.classList.remove("active");
-                btn.setAttribute("aria-pressed", "false");
-            });
-            // Добавляем класс 'active' к выбранной кнопке и aria-pressed
-            button.classList.add("active");
-            button.setAttribute("aria-pressed", "true");
-            // Устанавливаем значение в скрытое поле
-            radiusInput.value = button.getAttribute("data-value");
-            // Обновляем локальную переменную радиуса
-            radius = parseFloat(radiusInput.value);
-            // Перерисовываем канвас с новым радиусом
-            drawCanvas();
-            if (!isNaN(savedX) && !isNaN(savedY) && !isNaN(savedR)) {
-                drawPoint(savedX, savedY); // Рисуем точку
-            }
-        });
-    });
+    const savedR = parseFloat(window.savedR) || NaN;
 
     // Инициализация формы и канваса с сохранёнными значениями
-    if (!isNaN(savedR)) {
-        radius = savedR;
-        // Установка активной кнопки радиуса
-        radiusButtons.forEach(btn => {
-            if (parseFloat(btn.getAttribute("data-value")) === radius) {
-                btn.classList.add("active");
-                btn.setAttribute("aria-pressed", "true");
-            } else {
-                btn.classList.remove("active");
-                btn.setAttribute("aria-pressed", "false");
-            }
-        });
-        radiusInput.value = radius;
+    if (!isNaN(savedX)) {
+        xSelect.value = savedX;
     }
-
-    // Устанавливаем сохранённое значение Y
     if (!isNaN(savedY)) {
-        ySelect.value = savedY;
-        yHidden.value = savedY;
+        yInput.value = savedY;
+    }
+    if (!isNaN(savedR)) {
+        rInput.value = savedR;
     }
 
     drawCanvas();
-    // Отрисовка сохранённой точки, если координаты валидны
     if (!isNaN(savedX) && !isNaN(savedY) && !isNaN(savedR)) {
         drawPoint(savedX, savedY); // Рисуем точку
     }
 
-    // Обработчик выбора значения Y через select
-    ySelect.addEventListener("change", () => {
-        const selectedY = ySelect.value;
-        yHidden.value = selectedY;
-    });
-
     // Обработчик клика по канвасу
     canvas.addEventListener("click", (event) => {
-        radius = parseFloat(radiusInput.value);
+        const r = parseFloat(rInput.value);
 
-        if (!radius || isNaN(radius)) {
-            showToast("Установите радиус области перед выбором точки.", "warning");
+        if (!r || isNaN(r) || r < 1 || r > 4) {
+            showToast("Установите корректное значение радиуса (1 ≤ R ≤ 4) перед выбором точки.", "warning");
             return;
         }
 
@@ -97,9 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Обработчик отправки формы для валидации
     form.addEventListener("submit", (event) => {
-        let x = form.elements["x"].value.trim();
-        const y = yHidden.value.trim(); // Используем скрытое поле
-        const r = form.elements["radius"].value.trim();
+        const x = xSelect.value.trim();
+        const y = yInput.value.trim();
+        const r = rInput.value.trim();
 
         // Проверка на пустые значения
         if (!isValidNumber(x) || !isValidNumber(y) || !isValidNumber(r)) {
@@ -108,23 +65,27 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        x = parseFloat(x);
+        const yValue = parseFloat(y);
+        const rValue = parseFloat(r);
 
-        // Проверка диапазона X
-        if (x < -5 || x > 3) {
+        // Проверка диапазонов
+        if (yValue < -3 || yValue > 5) {
             event.preventDefault();
-            showToast("X должен быть в допустимом диапазоне [-5, 3].", "warning");
+            showToast("Y должен быть в допустимом диапазоне [-3, 5].", "warning");
+            return;
+        }
+        if (rValue < 1 || rValue > 4) {
+            event.preventDefault();
+            showToast("R должен быть в допустимом диапазоне [1, 4].", "warning");
             return;
         }
 
         // Проверка количества знаков после запятой
-        const xString = form.elements["x"].value.trim();
-        if (!/^[-]?\d+(\.\d{1,2})?$/.test(xString)) {
+        if (!isValidPrecision(y) || !isValidPrecision(r)) {
             event.preventDefault();
-            showToast("Допустимо максимум две цифры после запятой: например, 1.01.", "warning");
+            showToast("Допустимо максимум две цифры после запятой для Y и R.", "warning");
             return;
         }
-
 
         // Если все проверки пройдены, отправляем форму
         console.log(x, y, r);
@@ -134,10 +95,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawAxes();
 
-        if (!isNaN(radius) && radius > 0) {
-            drawCircle(radius);
-            drawTriangle(radius);
-            drawSquare(radius);
+        const r = parseFloat(rInput.value);
+        if (!isNaN(r) && r > 0) {
+            drawCircle(r);
+            drawTriangle(r);
+            drawSquare(r);
         }
     }
 
@@ -215,14 +177,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawPoint(x, y) {
         ctx.fillStyle = "#50E3C2";
         ctx.beginPath();
-        ctx.arc(centerX + x * scale, centerY - y * scale, 4, 0, Math.PI * 2); // Увеличен радиус точки для видимости
+        ctx.arc(centerX + x * scale, centerY - y * scale, 4, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     }
 
     function submitPoint(x, y) {
-        form.elements["x"].value = x;
-        yHidden.value = y; // Устанавливаем значение в скрытое поле
+        form.elements["x_select"].value = x;
+        form.elements["y_input"].value = y;
         form.submit();
     }
 
@@ -230,7 +192,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return !isNaN(value) && value !== "";
     }
 
-    // Функция отображения сообщений
+    function isValidPrecision(value) {
+        return /^-?\d+(\.\d{1,2})?$/.test(value); // Допустимо максимум две цифры после запятой
+    }
+
     function showToast(message, type) {
         const toast = document.createElement("div");
         toast.className = `toast toast-${type}`;
